@@ -4,7 +4,7 @@
 
 <h1> SSH Keys Overview </h1>
 
-  <table class="table">
+  <table class="table" style="table-layout: fixed;word-wrap: break-word;">
   {% for item in items -%}
     {% if loop.first %}
       <thead>
@@ -19,20 +19,20 @@
         <tr>
         {%- set rowloop = loop %}
         {%- for field in table_fields -%}
-		  <td>
-		{%- if field == 'actions' -%}
-			<a class="btn btn-primary" href="sshkeys_assign/{{ item['id'] }}">Assign Nodes</a>
-			{%- for action in actions -%}
-				<a class="btn btn-primary" href="sshkeys/{{ item['id'] }}/{{ action }}">{{ action }}</a>
-			{%- endfor -%}
-		{%- elif field == 'openwrt' -%}
-			{%- for openwrt in openwrts[item['id']] -%}
-		      	<a href='{{request.route_path('openwrt_list')}}/{{ openwrt['uuid'] }}'>{{ openwrt['name'] }} / {{ openwrt['uuid'] }}</a> <br>
-		      {%- endfor -%}
-		{%- else -%}
-			  {{ item[field] }}
-		{%- endif -%}
-		  </td>
+          <td class="col-md-3">
+        {%- if field == 'actions' -%}
+            <a class="btn btn-primary" href="sshkeys_assign/{{ item['id'] }}">Assign Nodes</a>
+            {%- for action in actions -%}
+                <a class="btn btn-primary" href="sshkeys/{{ item['id'] }}/{{ action }}">{{ action }}</a>
+            {%- endfor -%}
+        {%- elif field == 'openwrt' -%}
+            {%- for openwrt in openwrts[item['id']] -%}
+                <a href='{{request.route_path('openwrt_list')}}/{{ openwrt['uuid'] }}'>{{ openwrt['name'] }} / {{ openwrt['uuid'] }}</a> <br>
+              {%- endfor -%}
+        {%- else -%}
+              {{ item[field] }}
+        {%- endif -%}
+          </td>
         {%- endfor %}
         </tr>
     {%- if loop.last -%}
