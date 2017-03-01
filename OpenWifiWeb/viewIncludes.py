@@ -32,7 +32,7 @@ from openwifi.models import (
     OpenWifiSettings
     )
 
-from openwifi.forms import (
+from .forms import (
         AccessPointAddForm,
         OpenWrtEditForm,
         LoginForm,
