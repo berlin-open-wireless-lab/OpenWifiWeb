@@ -1,15 +1,63 @@
 {% extends main_template %}
 
 {% block content %}
-<form class="openwifi form-inline" action="{{ save_url }}" method="POST">
-    {{ form.name(class="form-control", placeholder="Name") }}
-    {{ form.address(class="form-control", placeholder="address") }}
-    {{ form.distribution(class="form-control", placeholder="Distribution") }}
-    {{ form.version(class="form-control", placeholder="Version") }}
-    {{ form.uuid(class="form-control", placeholder="UUID") }}
-    {{ form.login(class="form-control", placeholder="LOGIN") }}
-    {{ form.password(class="form-control", placeholder="PASSWORD") }}
-    <button type="submit" name="form.submitted" class="btn btn-default">Submit</button>
-    <!-- <input type="submit" class="form-control" name="form.submitted" value="Add" /> -->
+<h1>Edit OpenWRT settings</h1>
+<div>
+<form class="openwrt form-horizontal" action="{{ save_url }}" method="POST">
+  <div class="form-group">
+    <label for="namefield" class="col-sm-2 control-label">name</label>
+    <div class="col-sm-10">
+      {{ form.name(class="form-control", placeholder="Name", id="namefield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="addressfield" class="col-sm-2 control-label">address</label>
+    <div class="col-sm-10">
+      {{ form.address(class="form-control", placeholder="address", id="addressfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="distributionfield" class="col-sm-2 control-label">distribution</label>
+    <div class="col-sm-10">
+      {{ form.distribution(class="form-control", placeholder="Distribution", id="distributionfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="versionfield" class="col-sm-2 control-label">version</label>
+    <div class="col-sm-10">
+      {{ form.version(class="form-control", placeholder="Version", id="versionfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="uuidfield" class="col-sm-2 control-label">uuid</label>
+    <div class="col-sm-10">
+      {{ form.uuid(class="form-control", placeholder="UUID", id="uuidfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="loginfield" class="col-sm-2 control-label">login</label>
+    <div class="col-sm-10">
+      {{ form.login(class="form-control", placeholder="LOGIN", id="loginfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="passwordfield" class="col-sm-2 control-label">password</label>
+    <div class="col-sm-10">
+      {{ form.password(class="form-control", placeholder="PASSWORD", id="passwordfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" name="form.submitted" class="btn btn-default">Submit</button>
+    </div>
+  </div>
 </form>
+</div>
 {% endblock %}
