@@ -26,6 +26,7 @@ def addOpenWrtRoutes(config):
     config.add_route('openwrt_detail', '/openwrt/{uuid}')
     config.add_route('openwrt_action', '/openwrt/{uuid}/{action}')
     config.add_route('openwrt_add', '/openwrt_add')
+    config.add_route('openwrt_edit', '/openwrt_edit/{uuid}')
     config.add_route('openwrt_edit_config', '/openwrt_edit_config/{uuid}')
 
 def addTemplatesRoutes(config):

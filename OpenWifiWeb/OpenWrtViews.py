@@ -49,6 +49,27 @@ def openwrt_add(request):
     save_url = request.route_url('openwrt_add')
     return {'save_url':save_url, 'form':form}
 
+@view_config(route_name='openwrt_edit', renderer='templates/openwrt_add.jinja2', layout='base', permission='view')
+def openwrt_add(request):
+    device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
+    if (not device):
+        return exc.HTTPNotFound()
+    form = OpenWrtEditForm(request.POST)
+    if request.method == 'POST' and form.validate():
+        device.set(form.name.data, form.address.data, form.distribution.data, form.version.data, form.uuid.data, form.login.data, form.password.data, device.configured)
+        return HTTPFound(location=request.route_url('openwrt_list'))
+    else:
+        form.name.data = device.name
+        form.address.data = device.address
+        form.distribution.data = device.distribution
+        form.version.data = device.version
+        form.uuid.data = device.uuid
+        form.login.data = device.login
+        form.password.data = device.password
+
+    save_url = request.route_url('openwrt_edit', uuid=device.uuid)
+    return {'save_url':save_url, 'form':form}
+
 @view_config(route_name='openwrt_edit_config', renderer='templates/openwrt_edit_config.jinja2', layout='base', permission='view')
 def openwrt_edit_config(request):
     device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
