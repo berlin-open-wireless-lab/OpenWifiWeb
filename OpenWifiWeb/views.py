@@ -39,6 +39,10 @@ def logout(request):
     headers = forget(request)
     return Response('Logged out', headers=headers)
 
+@view_config(route_name="configGraph", renderer='templates/configGraph.jinja2', layout='base', permission='view')
+def drawConfigGraph(request):
+    return {"confID" : request.matchdict["ID"]}
+
 @view_config(route_name='settings', renderer='templates/settings.jinja2', layout='base', permission='view')
 def settingsView(request):
     form = SettingsForm(request.POST)

@@ -147,18 +147,24 @@ $(document).ready(function(){
        <tr>
        {%- set rowloop = loop %}
        {%- for field in table_fields -%}
+       <td>
        {%- if field == "configuration" -%}
-         <td><a class="btn btn-primary" href="{{ confdomain }}/{{ item[idfield] }}" >show config</a>
+         <a class="btn btn-primary" href="{{ confdomain }}/{{ item[idfield] }}" >show config</a>
          <a class="btn btn-primary" href="{{request.route_path('openwrt_edit', uuid=item[idfield])}}" >edit</a>
          <a class="btn btn-primary" href="{{request.route_path('luci', uuid=item[idfield])}}" target="_blank" >start luci</a></td>
+       {%- elif field == "master config" -%}
+         {%- if item['masterconf'] -%}
+           <a href="{{request.route_path('configGraph', ID=item['masterconf'].id)}}">{{item['masterconf'].id}}</a>
+         {%- else -%}
+           No Config
+         {%- endif -%}
        {%- else -%}
-         <td>
          <a href="{{ domain }}/{{ item[idfield] }}" >{{ item[field] }}</a>
          {%- if loop.first -%}
          <div id="Status_{{item[idfield]}}" style="display:inline;"></div>
          <input class='check' type='checkbox' name='{{item[idfield]}}' >
          {%- endif -%}
-         </td>
+       </td>
        {%- endif -%}
        {%- endfor %}
        </tr>

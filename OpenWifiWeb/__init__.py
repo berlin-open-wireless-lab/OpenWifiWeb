@@ -21,6 +21,8 @@ def addPluginRoutes(config):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
 
+    config.add_route('configGraph', '/configGraph/{ID}')
+
 def addOpenWrtRoutes(config):
     config.add_route('openwrt_list', '/openwrt')
     config.add_route('openwrt_detail', '/openwrt/{uuid}')

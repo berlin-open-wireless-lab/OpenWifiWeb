@@ -1,0 +1,56 @@
+{% extends main_template %}
+
+{% block additionalheader %}
+  <script type="text/javascript" src="{{request.static_path('OpenWifiWeb:static/js/vis.js')}}"></script>
+  <style type="text/css">
+    html, body, .container, #content{
+      height: 100%;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h1>Config Graph {{confID}}</h1>
+  <div class="row" style="height:100%;">
+    <div id="configGraph" class="col-md-10" style="height:100%;">
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            drawConfigGraph(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", "{{request.route_path('ManageMasterConfig', ID=confID)}}", true);
+    xmlHttp.send(null);
+  
+    function drawConfigGraph(jsonString) {
+        var jsonData = JSON.parse(jsonString);
+        // create an array with nodes
+        var nodes = new vis.DataSet(jsonData.nodes);
+  
+        // create an array with edges
+        var edges = new vis.DataSet(jsonData.edges);
+  
+  
+        var options = {
+            layout: {
+                hierarchical: {
+                    direction: "LR"
+                }
+            }
+        };
+  
+        // create a network
+        var container = document.getElementById('configGraph');
+        var data = {
+          nodes: nodes,
+          edges: edges
+        };
+        //var options = {};
+        var network = new vis.Network(container, data, options);
+    }
+  </script>
+{% endblock %}

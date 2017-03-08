@@ -18,14 +18,16 @@ def openwrt_list(request):
                 openwrts.append(DBSession.query(OpenWrt).get(name))
         do_multi_openwrt_action(openwrts, action)
         return get_action_return(action, request)
+
     for device in openwrt:
         devices.append(str(device.uuid))
+
     return {'idfield': 'uuid',
             'domain': 'openwrt',
             'devices': json.dumps(devices),
             'confdomain': 'openwrt_edit_config',
             'items': openwrt,
-            'table_fields': ['name', 'distribution', 'version', 'address', 'uuid','configuration', 'configured'],
+            'table_fields': ['name', 'distribution', 'version', 'address', 'uuid','configuration', 'configured', 'master config'],
             'actions' : openwrt_actions }
 
 @view_config(route_name='openwrt_detail', renderer='templates/openwrt_detail.jinja2', layout='base', permission='view')
