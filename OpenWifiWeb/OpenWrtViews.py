@@ -1,6 +1,7 @@
 from OpenWifiWeb.viewIncludes import *
+from .views import id_generator
 
-openwrt_actions = ['delete', 'getConfig', 'saveConfToArchive'] 
+openwrt_actions = ['delete', 'get config', 'save config to archive', 'parse config'] 
 
 @view_config(route_name='openwrt_list', renderer='templates/openwrt.jinja2', layout='base', permission='view')
 def openwrt_list(request):
@@ -115,18 +116,21 @@ def do_multi_openwrt_action(openwrts, action):
 def do_action_with_device(action, device):
     if action == 'delete':
         DBSession.delete(device)
-    if action == 'getConfig':
+    if action == 'get config':
         jobtask.get_config.delay(device.uuid)
-    if action == 'saveConfToArchive':
+    if action == 'save config to archive':
         confToBeArchived = ConfigArchive(datetime.now(),device.configuration,device.uuid,id_generator())
         DBSession.add(confToBeArchived)
+    if action == 'parse config':
+        from openwifi.dbHelper import parseToDBModel
+        parseToDBModel(device)
 
 def get_action_return(action, request):
-    if action == 'delete':
+    if action == 'delete' or \
+       action == 'get config' or \
+       action == 'parse config':
         return HTTPFound(location=request.route_url('openwrt_list'))
-    if action == 'getConfig':
-        return HTTPFound(location=request.route_url('openwrt_list'))
-    if action == 'saveConfToArchive':
+    if action == 'save config to archive':
         return HTTPFound(location=request.route_url('confarchive'))
 
 @view_config(route_name='openwrt_action', renderer='templates/openwrt_add.jinja2', layout='base', permission='view')
