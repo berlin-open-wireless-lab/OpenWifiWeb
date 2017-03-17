@@ -69,7 +69,15 @@ def settingsView(request):
 
 @view_config(route_name='file_upload', renderer='templates/file_upload.jinja2', layout='base', request_method="GET", permission='view')
 def file_upload_get(request):
-    return {}
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(basepath, 'upload')
+
+    files = os.listdir(file_path)
+
+    # don't display gitkeep file
+    files.pop(files.index('.gitkeep'))
+
+    return {"files":files}
 
 @view_config(route_name='file_upload', renderer='templates/file_upload.jinja2', layout='base', request_method="POST", permission='view')
 def file_upload_post(request):
@@ -87,7 +95,7 @@ def file_upload_post(request):
 
     os.rename(temp_file_path, file_path)
 
-    return HTTPFound(location=request.route_url('home'))
+    return HTTPFound(location=request.route_url('file_upload'))
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

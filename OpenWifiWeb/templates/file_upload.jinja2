@@ -2,13 +2,30 @@
 
 {% block content %}
 
-<form action="/file_upload" method="post" accept-charset="utf-8"
-      enctype="multipart/form-data">
+<div class="row">
+  <h1> File Upload </h1>
+</div>
 
-    <label for="file">File</label>
-    <input id="file" name="file" type="file" value="" />
+<div class="row">
+  <h2>Uploaded Files</h2>
+    {% for file in files %}
+      <a href="{{request.static_path('OpenWifiWeb:upload/'+file)}}">{{ file }}</a> <br />
+    {% endfor %}
+</div>
 
-    <input type="submit" value="submit" />
-</form>
+<div class="row">
+  <h2>Upload New File</h2>
+  <form action="{{request.route_path('file_upload')}}" method="post" accept-charset="utf-8"
+        enctype="multipart/form-data" class="form-inline">
+  
+    <div class="from-group">
+      <label for="file">select file to upload</label> 
+      <input id="file" name="file" type="file" value="" class="form-control"/>
+    </div>
+
+    <button class="btn btn-primary" type="submit">upload</button>
+  </form>
+</div>
+
 
 {% endblock %}

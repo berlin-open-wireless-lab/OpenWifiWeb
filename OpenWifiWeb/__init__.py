@@ -9,6 +9,8 @@ globalWebViews = [['home','Home'],
 def addPluginRoutes(config):
     config.add_static_view('static', 'OpenWifiWeb:static', cache_max_age=3600)
 
+    config.add_static_view('upload', 'OpenWifiWeb:upload', cache_max_age=3600)
+
     addOpenWrtRoutes(config)
     addTemplatesRoutes(config)
     addArchiveRoutes(config)
