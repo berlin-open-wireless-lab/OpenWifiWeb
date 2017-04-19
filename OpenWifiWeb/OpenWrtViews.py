@@ -119,8 +119,7 @@ def do_action_with_device(action, device):
     if action == 'get config':
         jobtask.get_config.delay(device.uuid)
     if action == 'save config to archive':
-        confToBeArchived = ConfigArchive(datetime.now(),device.configuration,device.uuid,id_generator())
-        DBSession.add(confToBeArchived)
+        jobtask.archive_config(device.uuid)
     if action == 'parse config':
         from openwifi.dbHelper import parseToDBModel
         parseToDBModel(device)
