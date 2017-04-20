@@ -1,5 +1,5 @@
 from OpenWifiWeb.viewIncludes import *
-from .views import id_generator
+from openwifi.utils import id_generator
 
 openwrt_actions = ['delete', 'get config', 'save config to archive', 'parse config'] 
 

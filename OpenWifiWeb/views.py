@@ -1,4 +1,5 @@
 from OpenWifiWeb.viewIncludes import *
+from openwifi.utils import id_generator
 
 from pyramid_ldap3 import (
     get_ldap_connector,
@@ -96,6 +97,3 @@ def file_upload_post(request):
     os.rename(temp_file_path, file_path)
 
     return HTTPFound(location=request.route_url('file_upload'))
-
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))

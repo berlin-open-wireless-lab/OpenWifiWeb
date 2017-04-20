@@ -1,4 +1,5 @@
 from OpenWifiWeb.viewIncludes import *
+from openwifi.utils import id_generator
 
 @view_config(route_name='templates', renderer='templates/templates.jinja2', layout='base', permission='view')
 def templates(request):

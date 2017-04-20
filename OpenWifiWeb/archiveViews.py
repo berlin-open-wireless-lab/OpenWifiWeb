@@ -1,4 +1,5 @@
 from OpenWifiWeb.viewIncludes import *
+from openwifi.utils import id_generator
 
 @view_config(route_name='confarchive', renderer='templates/archive_list.jinja2', layout='base', permission='view')
 def confarchive(request):
