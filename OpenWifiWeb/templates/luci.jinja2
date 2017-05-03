@@ -23,9 +23,15 @@
             $(function() {
                 var L = new LuCI2("{{ uuid }}", "{{request.route_url('home')}}");
 
-                L.ui.login().then(function() {
+                response_cb = function(response) {
+                    L.globals.sid = response.ubus_rpc_session;
+                    L.setHash('id', L.globals.sid);
+                    L.session.startHeartbeat();
+                    L.ui.dialog(false);
                     L.ui.load();
-                });
+                };
+
+                L.session.login("{{login}}", "{{password}}").then(response_cb);
             });
         </script>
     </head>

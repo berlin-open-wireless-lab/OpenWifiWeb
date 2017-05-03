@@ -3,8 +3,11 @@ from OpenWifiWeb.viewIncludes import *
 @view_config(route_name='luci', renderer='templates/luci.jinja2', layout='base', permission='view')
 def luci2(request):
     print(request)
-    uuid=request.matchdict['uuid']
-    return {"uuid":uuid}
+    uuid = request.matchdict['uuid']
+    device = DBSession.query(OpenWrt).get(uuid)
+    return {"uuid" : uuid,
+            "password" : device.password,
+            "login" : device.login}
 
 @view_config(route_name='ubus',renderer="json", permission='view')
 def ubus(request):
@@ -13,7 +16,7 @@ def ubus(request):
     if len(command)>0:
         command = command[0]
     else:
-    	command=False
+        command=False
     uuid = request.matchdict['uuid']
     #print(request)
     #print(request.environ)
@@ -27,9 +30,9 @@ def ubus(request):
     request.server_name=address
     request.host_name=address
     if command:
-	    request.upath_info='/ubus/'+request.upath_info.split('/')[-1]
+        request.upath_info='/ubus/'+request.upath_info.split('/')[-1]
     else:
-	    request.upath_info='/ubus'
+        request.upath_info='/ubus'
     #print(request.url)
     #print(request.application_url)
     #print(request.path)
