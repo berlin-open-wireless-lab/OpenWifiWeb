@@ -1,6 +1,10 @@
 {% extends main_template %}
 
 {% block content %}
+<h1>Please login to OpenWifi </h1>
+{% if invalidCredentials %}
+<div class='alert alert-danger'><strong>invalid credentials</strong></div>
+{% endif %}
 <form class="openwifi form-inline" action="{{ save_url }}" method="POST">
     {{ form.login(class="form-control", placeholder="LOGIN") }}
     {{ form.password(class="form-control", placeholder="PASSWORD") }}

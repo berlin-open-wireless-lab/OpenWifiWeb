@@ -1,65 +1,10 @@
 from OpenWifiWeb.viewIncludes import *
+from pyramid.httpexceptions import HTTPForbidden
 from openwifi.utils import id_generator
-
 
 @view_config(route_name='home', renderer='templates/home.jinja2', layout='base', permission='view')
 def home(request):
     return {}
-
-def auth_ldap(request, login, password):
-    from pyramid_ldap3 import (
-        get_ldap_connector,
-        groupfinder)
-
-    connector = get_ldap_connector(request)
-    data = connector.authenticate(login, password)
-    if data is not None:
-        dn = data[0]
-        headers = remember(request, dn)
-        return HTTPFound(location=request.route_url('home'), headers=headers)
-    else:
-        print("wrong credentials")
-        error = 'Invalid credentials'
-
-def auth(request, login, password):
-    from openwifi.authentication import check_password
-
-    if check_password(login, password):
-        headers = remember(request, login)
-        return HTTPFound(location=request.route_url('home'), headers=headers)
-    else:
-        print("wrong credentials")
-        error = 'Invalid credentials'
-
-@view_config(route_name='login',
-             renderer='templates/login.jinja2',
-         layout='base')
-@forbidden_view_config(renderer='templates/login.jinja2', layout='base')
-def login(request):
-
-    form = LoginForm(request.POST)
-    save_url = request.route_url('login')
-
-    if request.method == 'POST' and form.validate():
-        login = form.login.data
-        password = form.password.data
-        
-        from pyramid.settings import asbool
-        settings = request.registry.settings
-        print(settings)
-
-        if asbool(settings.get('openwifi.useLDAP')):
-            return auth_ldap(request, login, password)
-
-        if asbool(settings.get('openwifi.useAuth')):
-            return auth(request, login, password)
-
-    return {'save_url':save_url, 'form':form}
-
-@view_config(route_name='logout')
-def logout(request):
-    headers = forget(request)
-    return Response('Logged out', headers=headers)
 
 @view_config(route_name="configGraph", renderer='templates/configGraph.jinja2', layout='base', permission='view')
 def drawConfigGraph(request):

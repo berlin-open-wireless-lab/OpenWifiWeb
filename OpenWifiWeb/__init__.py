@@ -17,11 +17,9 @@ def addPluginRoutes(config):
     addSshRoutes(config)
     addLuciRoutes(config)
 
-    config.add_route('home', '/')
     config.add_route('settings','/settings')
     config.add_route('file_upload', '/file_upload')
-    config.add_route('login', '/login')
-    config.add_route('logout', '/logout')
+    config.add_route('loginForm', '/loginForm')
 
     config.add_route('configGraph', '/configGraph/{ID}')
 
