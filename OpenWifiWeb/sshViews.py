@@ -35,9 +35,15 @@ def sshkeys_assign(request):
     sshkey = DBSession.query(SshKey).get(request.matchdict['id'])
     if not sshkey:
         return exc.HTTPNotFound()
-    openwrt = DBSession.query(OpenWrt)
+    from openwifi.authentication import get_nodes
+    openwrt = get_nodes(request)
     devices = {}
     if request.POST:
+        owned_nodes = get_nodes(request)
+        owned_nodes_dict = {}
+        for node in owned_nodes:
+            owned_nodes_dict[str(node.uuid)] = node
+
         devices_to_be_updated = []
         for ow in openwrt:
             try:
@@ -47,7 +53,10 @@ def sshkeys_assign(request):
                 pass
         for name,value in request.POST.dict_of_lists().items():
             if name!='submitted':
-                device = DBSession.query(OpenWrt).get(name)
+                if name not in owned_nodes_dict:
+                    continue
+
+                device = owned_nodes_dict[name]
                 if  value: # if item is not the submit button and it's checkd
                     device.ssh_keys.append(sshkey)
                     devices_to_be_updated.append(device.uuid)

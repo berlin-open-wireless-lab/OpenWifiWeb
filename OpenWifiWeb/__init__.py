@@ -25,11 +25,11 @@ def addPluginRoutes(config):
 
 def addOpenWrtRoutes(config):
     config.add_route('openwrt_list', '/openwrt')
-    config.add_route('openwrt_detail', '/openwrt/{uuid}')
-    config.add_route('openwrt_action', '/openwrt/{uuid}/{action}')
+    config.add_route('openwrt_detail', '/openwrt/{uuid}', factory='openwifi.node_context')
+    config.add_route('openwrt_action', '/openwrt/{uuid}/{action}', factory='openwifi.node_context')
     config.add_route('openwrt_add', '/openwrt_add')
-    config.add_route('openwrt_edit', '/openwrt_edit/{uuid}')
-    config.add_route('openwrt_edit_config', '/openwrt_edit_config/{uuid}')
+    config.add_route('openwrt_edit', '/openwrt_edit/{uuid}', factory='openwifi.node_context')
+    config.add_route('openwrt_edit_config', '/openwrt_edit_config/{uuid}', factory='openwifi.node_context')
 
 def addTemplatesRoutes(config):
     config.add_route('templates', '/templates')
@@ -51,5 +51,5 @@ def addSshRoutes(config):
     config.add_route('sshkeys_action', '/sshkeys/{id}/{action}')
 
 def addLuciRoutes(config):
-    config.add_route('luci', '/luci/{uuid}')
-    config.add_route('ubus', '/ubus/{uuid}*command')
+    config.add_route('luci', '/luci/{uuid}', factory='openwifi.node_context')
+    config.add_route('ubus', '/ubus/{uuid}*command', factory='openwifi.node_context')

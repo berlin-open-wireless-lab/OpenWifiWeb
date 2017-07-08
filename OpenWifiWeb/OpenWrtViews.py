@@ -1,11 +1,13 @@
 from OpenWifiWeb.viewIncludes import *
 from openwifi.utils import id_generator
+from openwifi.authentication import get_node_by_request
 
 openwrt_actions = ['delete', 'get config', 'save config to archive', 'parse config'] 
 
 @view_config(route_name='openwrt_list', renderer='templates/openwrt.jinja2', layout='base', permission='view')
 def openwrt_list(request):
-    openwrt = DBSession.query(OpenWrt)
+    from openwifi.authentication import get_nodes
+    openwrt = get_nodes(request)
     devices = []
     if request.POST:
         openwrts = []
@@ -31,9 +33,9 @@ def openwrt_list(request):
             'table_fields': ['name', 'distribution', 'version', 'address', 'uuid','configuration', 'configured', 'master config'],
             'actions' : openwrt_actions }
 
-@view_config(route_name='openwrt_detail', renderer='templates/openwrt_detail.jinja2', layout='base', permission='view')
+@view_config(route_name='openwrt_detail', renderer='templates/openwrt_detail.jinja2', layout='base', permission='node_access')
 def openwrt_detail(request):
-    device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
+    device = get_node_by_request(request)
     if not device:
         return exc.HTTPNotFound()
 
@@ -41,7 +43,7 @@ def openwrt_detail(request):
             'fields': ['name', 'distribution', 'version', 'address', 'uuid', 'login', 'password', 'templates'],
             'actions': openwrt_actions }
 
-@view_config(route_name='openwrt_add', renderer='templates/openwrt_add.jinja2', layout='base', permission='view')
+@view_config(route_name='openwrt_add', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_add')
 def openwrt_add(request):
     form = OpenWrtEditForm(request.POST)
     if request.method == 'POST' and form.validate():
@@ -52,9 +54,9 @@ def openwrt_add(request):
     save_url = request.route_url('openwrt_add')
     return {'save_url':save_url, 'form':form}
 
-@view_config(route_name='openwrt_edit', renderer='templates/openwrt_add.jinja2', layout='base', permission='view')
+@view_config(route_name='openwrt_edit', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_access')
 def openwrt_add(request):
-    device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
+    device = get_node_by_request(request)
     if (not device):
         return exc.HTTPNotFound()
     form = OpenWrtEditForm(request.POST)
@@ -73,9 +75,9 @@ def openwrt_add(request):
     save_url = request.route_url('openwrt_edit', uuid=device.uuid)
     return {'save_url':save_url, 'form':form}
 
-@view_config(route_name='openwrt_edit_config', renderer='templates/openwrt_edit_config.jinja2', layout='base', permission='view')
+@view_config(route_name='openwrt_edit_config', renderer='templates/openwrt_edit_config.jinja2', layout='base', permission='node_access')
 def openwrt_edit_config(request):
-    device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
+    device = get_node_by_request(request)
     if not device:
         return exc.HTTPNotFound()
     conf = Uci()
@@ -132,10 +134,10 @@ def get_action_return(action, request):
     if action == 'save config to archive':
         return HTTPFound(location=request.route_url('confarchive'))
 
-@view_config(route_name='openwrt_action', renderer='templates/openwrt_add.jinja2', layout='base', permission='view')
+@view_config(route_name='openwrt_action', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_access')
 def openwrt_action(request):
     action = request.matchdict['action']
-    device = DBSession.query(OpenWrt).get(request.matchdict['uuid'])
+    device = get_node_by_request(request)
     if not device:
         return exc.HTTPNotFound()
     do_action_with_device(action, device)

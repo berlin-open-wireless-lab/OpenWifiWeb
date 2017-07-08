@@ -51,9 +51,16 @@ def templates_assign(request):
     template = DBSession.query(Templates).get(request.matchdict['id'])
     if not template:
         return exc.HTTPNotFound()
-    openwrt = DBSession.query(OpenWrt)
+
+    from openwifi.authentication import get_nodes
+    openwrt = get_nodes(request)
     devices = {}
     if request.POST:
+        owned_nodes = get_nodes(request)
+        owned_nodes_dict = {}
+        for node in owned_nodes:
+            owned_nodes_dict[str(node.uuid)] = node
+
         for ow in openwrt:
             try:
                 ow.templates.remove(template)
@@ -61,7 +68,10 @@ def templates_assign(request):
                 pass
         for name,value in request.POST.dict_of_lists().items():
             if name!='submitted':
-                device = DBSession.query(OpenWrt).get(name)
+                if name not in owned_nodes_dict:
+                    continue
+
+                device = owned_nodes_dict[name]
                 if  value: # if item is not the submit button and it's checkd
                     device.templates.append(template)
         return HTTPFound(location = request.route_url('templates'))

@@ -55,7 +55,10 @@ def archiveapplyconfig(request):
     config = DBSession.query(ConfigArchive).get(request.matchdict['id'])
     if not config:
         return exc.HTTPNotFound()
-    openwrt = DBSession.query(OpenWrt)
+
+    from openwifi.authentication import get_nodes
+    openwrt = get_nodes(request)
+
     devices = {}
     if request.POST:
         for name,value in request.POST.dict_of_lists().items():
