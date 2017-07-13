@@ -13,8 +13,10 @@
 {% block content %}
   <h1>Config Graph {{confID}}</h1>
   <div class="row" style="height:100%;width:100%;">
-    <div id="configGraph" class="col-md-10" style="height:100%;width:100%;">
+    <div id="configGraph" class="col-md-10" style="height:100%;width:80%;">
     </div>
+    <pre id="nodeInfo" class="col-md-10" style="height:100%;width:20%;">
+    </pre>
   </div>
 
   <script type="text/javascript">
@@ -53,6 +55,27 @@
         };
         //var options = {};
         var network = new vis.Network(container, data, options);
+
+        network.on("click", function(params) {
+            var selectedNode = params.nodes[0];
+
+            if(!selectedNode)
+                return;
+
+            var requestNodeInfo = new XMLHttpRequest();
+
+            requestNodeInfo.onreadystatechange = function() { 
+                if (requestNodeInfo.readyState == 4 && requestNodeInfo.status == 200) {
+                    var nodeInfo = JSON.parse(requestNodeInfo.responseText);
+
+                    nodeInfoDiv = document.getElementById('nodeInfo');
+                    nodeInfoDiv.innerHTML = JSON.stringify(nodeInfo, null, 4);
+                    }
+            }
+
+            requestNodeInfo.open("GET", "{{request.route_path('MasterConfNodeInfo', NODE="")}}"+selectedNode, true);
+            requestNodeInfo.send(null);
+            })
     }
   </script>
 {% endblock %}
