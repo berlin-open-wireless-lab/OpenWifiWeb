@@ -40,7 +40,7 @@ def openwrt_detail(request):
         return exc.HTTPNotFound()
 
     return {'device': device,
-            'fields': ['name', 'distribution', 'version', 'address', 'uuid', 'login', 'password', 'templates'],
+            'fields': ['name', 'distribution', 'version', 'address', 'uuid', 'login', 'password', 'templates', 'capabilities', 'communication_protocol'],
             'actions': openwrt_actions }
 
 @view_config(route_name='openwrt_add', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_add')
@@ -71,6 +71,8 @@ def openwrt_add(request):
         form.uuid.data = device.uuid
         form.login.data = device.login
         form.password.data = device.password
+        form.capabilities.data = device.capabilities
+        form.communication_protocol.data = device.communication_protocol
 
     save_url = request.route_url('openwrt_edit', uuid=device.uuid)
     return {'save_url':save_url, 'form':form}

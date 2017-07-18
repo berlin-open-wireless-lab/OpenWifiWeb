@@ -54,6 +54,20 @@
   </div>
 
   <div class="form-group">
+     <label for="capabilititesfield" class="col-sm-2 control-label">capabilities</label>
+    <div class="col-sm-10">
+      {{ form.capabilities(class="form-control", placeholder="CAPABILITIES", id="capabilitiesfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+     <label for="commprotfield" class="col-sm-2 control-label">communicaiton protocol</label>
+    <div class="col-sm-10">
+      {{ form.communication_protocol(class="form-control", placeholder="COMMUNICATION PROTOCOL", id="commprotfield") }}
+    </div>
+  </div>
+
+  <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" name="form.submitted" class="btn btn-default">Submit</button>
     </div>

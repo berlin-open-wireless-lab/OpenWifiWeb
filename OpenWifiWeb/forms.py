@@ -33,6 +33,8 @@ class OpenWrtEditForm(Form):
     login = TextField('login')
     password = PasswordFieldNonHide('password')
     configuration = TextField('configuration')
+    capabilities = TextField('capabilities')
+    communication_protocol = TextField('communication_protocol')
 
 class LoginForm(Form):
     login = TextField('login')
