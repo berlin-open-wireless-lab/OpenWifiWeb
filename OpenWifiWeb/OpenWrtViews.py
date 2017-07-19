@@ -55,7 +55,7 @@ def openwrt_add(request):
     return {'save_url':save_url, 'form':form}
 
 @view_config(route_name='openwrt_edit', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_access')
-def openwrt_add(request):
+def openwrt_edit(request):
     device = get_node_by_request(request)
     if (not device):
         return exc.HTTPNotFound()
