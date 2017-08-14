@@ -31,14 +31,6 @@ def addOpenWrtRoutes(config):
     config.add_route('openwrt_edit', '/openwrt_edit/{uuid}', factory='openwifi.node_context')
     config.add_route('openwrt_edit_config', '/openwrt_edit_config/{uuid}', factory='openwifi.node_context')
 
-def addTemplatesRoutes(config):
-    config.add_route('templates', '/templates')
-    config.add_route('templates_add', '/templates_add')
-    config.add_route('templates_assign', '/templates_assign/{id}')
-    config.add_route('templates_edit', '/templates_edit/{id}')
-    config.add_route('templates_delete', '/templates_delete/{id}')
-    config.add_route('templates_action', '/templates/{id}/{action}')
-
 def addArchiveRoutes(config):
     config.add_route('confarchive', '/confarchive')
     config.add_route('archive_edit_config', '/archive_edit_config/{id}')
