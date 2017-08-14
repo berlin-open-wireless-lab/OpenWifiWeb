@@ -2,7 +2,6 @@ globalWebViews = [['home','Home'],
                   ['settings','Settings'],
                   ['openwrt_list','OpenWrt'],
                   ['confarchive','Archive'],
-                  ['templates','Templates'],
                   ['sshkeys','SSH Keys'],
                   ['file_upload','File Upload']]
 
@@ -12,7 +11,6 @@ def addPluginRoutes(config):
     config.add_static_view('upload', 'OpenWifiWeb:upload', cache_max_age=3600)
 
     addOpenWrtRoutes(config)
-    addTemplatesRoutes(config)
     addArchiveRoutes(config)
     addSshRoutes(config)
     addLuciRoutes(config)
