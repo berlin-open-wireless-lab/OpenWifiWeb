@@ -32,6 +32,9 @@
           {%- for view in request.registry.settings['OpenWifi.globalViews'] -%}
             <li><a href="{{request.route_path(view[0])}}">{{view[1]}}</a></li>
           {%- endfor -%}
+          {%- if 'group:admin' in request.effective_principals -%}
+            <li><a href="{{request.route_path('administration')}}">Administration</a></li>
+          {%- endif -%}
           </ul>
         </div><!--/.nav-collapse -->
       </div>

@@ -1,0 +1,147 @@
+{% extends main_template %}
+{% block content %}
+  <h1>Administration</h1>
+
+  <h2>User Mangement</h2>
+
+  <div id='users'>
+  </div>
+  <button class='btn btn-primary' data-toggle='modal' data-target='#add_user_modal'>Add User</button>
+
+  <script type="text/javascript">
+    update_user_table();
+
+    function update_user_table() {
+        var request_users = new XMLHttpRequest();
+        request_users.onreadystatechange = function() { 
+            if (request_users.readyState == 4 && request_users.status == 200)
+                print_users(request_users.responseText);
+        }
+        request_users.open("GET", "{{request.route_path('collection_users')}}", true);
+        request_users.send(null);
+    }
+
+    function print_users(response) 
+    {
+        users = JSON.parse(response)
+        var user_table = document.createElement("TABLE");
+        user_table.setAttribute('class', 'table');
+        user_table.setAttribute('id', 'user_table');
+
+        var header = user_table.createTHead();
+        var row = header.insertRow(0);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'user';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'id';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'is admin';
+        row.appendChild(cell);
+
+        var table_body = user_table.createTBody();
+
+        var i = 0;
+        var request_permissions = [];
+        for(var user in users)
+        {
+            var curRow = table_body.insertRow();
+            curRow.insertCell(0).innerHTML = user;
+            curRow.insertCell(1).innerHTML = users[user];
+            curRow.insertCell(2).setAttribute('id', users[user]);
+
+            request_permissions[i] = new XMLHttpRequest();
+            request_permissions[i].onreadystatechange = function(req, user_id) { 
+                return function() {
+                    if (req.readyState == 4 && req.status == 200)
+                        update_permissions(req.responseText, user_id);
+                    }
+            }(request_permissions[i], users[user])
+            request_permissions[i].open("GET", "{{request.route_path('collection_users')}}/"+users[user], true);
+            request_permissions[i].send();
+            
+            i = i + 1;
+        }
+
+
+        var user_div = document.getElementById('users');
+        var user_table_element = document.getElementById('user_table');
+        if(user_table_element)
+        {
+            user_div.replaceChild(user_table, user_table_element);
+        }
+        else
+        {
+            user_div.appendChild(user_table);
+        }
+    }
+
+    function update_permissions(response, user_id)
+    {
+        resp = JSON.parse(response);
+        if(resp['admin'])
+            document.getElementById(user_id).innerHTML = 'Yes';
+        else
+            document.getElementById(user_id).innerHTML = 'No';
+    }
+
+    function add_user()
+    {
+        login = document.getElementById('login').value;
+        password = document.getElementById('password').value;
+        
+        data = {"login":login, "password":password};
+        console.log(data);
+        data_str = JSON.stringify(data);
+
+        var request_add_user = new XMLHttpRequest();
+
+        request_add_user.onreadystatechange = function() { 
+            if (request_add_user.readyState == 4 && request_add_user.status == 200)
+                update_user_table();
+        }
+
+        request_add_user.open("POST", "{{request.route_path('collection_users')}}", true);
+        request_add_user.setRequestHeader("Content-type", "application/json");
+        console.log(data_str);
+        request_add_user.send(data_str);
+    }
+  </script>
+
+  <!-- Modal -->
+  <div id="add_user_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add User</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+          <form>
+            <div class='form-group'>
+              <label for='login'>Login:</label>
+              <input type='text' class='form-control' id='login'>
+            </div>
+            <div class='form-group'>
+              <label for='password'>Password:</label>
+              <input type='password' class='form-control' id='password'>
+            </div>
+          </form>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_user();">Add</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+{% endblock %}

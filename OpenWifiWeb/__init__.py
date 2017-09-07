@@ -19,6 +19,8 @@ def addPluginRoutes(config):
     config.add_route('file_upload', '/file_upload')
     config.add_route('loginForm', '/loginForm')
 
+    config.add_route('administration','/administration')
+
     config.add_route('configGraph', '/configGraph/{ID}')
 
 def addOpenWrtRoutes(config):
