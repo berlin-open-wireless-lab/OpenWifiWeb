@@ -30,11 +30,11 @@
         <div class="collapse navbar-collapse" id="mynav-collapse">
           <ul class="nav navbar-nav">
           {%- for view in request.registry.settings['OpenWifi.globalViews'] -%}
+              {%- if 'group:admin' in request.effective_principals and view[0] == 'logout'-%}
+                <li><a href="{{request.route_path('administration')}}">Administration</a></li>
+              {%- endif -%}
             <li><a href="{{request.route_path(view[0])}}">{{view[1]}}</a></li>
           {%- endfor -%}
-          {%- if 'group:admin' in request.effective_principals -%}
-            <li><a href="{{request.route_path('administration')}}">Administration</a></li>
-          {%- endif -%}
           </ul>
         </div><!--/.nav-collapse -->
       </div>
