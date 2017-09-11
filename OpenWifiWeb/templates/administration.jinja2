@@ -8,8 +8,15 @@
   </div>
   <button class='btn btn-primary' onclick='add_user_clicked();'>Add User</button>
 
+  <h2>Access Management</h2>
+
+  <div id='accesses'>
+  </div>
+  <button class='btn btn-primary' data-toggle='modal' data-target='#add_access_modal'>Add Access</button>
+
   <script type="text/javascript">
     update_user_table();
+    update_access_table();
 
     function add_user_clicked()
     {
@@ -41,6 +48,16 @@
         }
         request_users.open("GET", "{{request.route_path('collection_users')}}", true);
         request_users.send(null);
+    }
+
+    function update_access_table() {
+        var request_access = new XMLHttpRequest();
+        request_access.onreadystatechange = function() { 
+            if (request_access.readyState == 4 && request_access.status == 200)
+                print_access(request_access.responseText);
+        }
+        request_access.open("GET", "{{request.route_path('collection_control_access')}}", true);
+        request_access.send(null);
     }
 
     function print_users(response) 
@@ -97,7 +114,6 @@
             
             i = i + 1;
         }
-
 
         var user_div = document.getElementById('users');
         var user_table_element = document.getElementById('user_table');
@@ -210,9 +226,173 @@
         request_user.send(data);
     }
 
+    function access_request(request_type, accessid, data)
+    {
+        request_access = new XMLHttpRequest();
+
+        request_access.onreadystatechange = function() { 
+            if (request_access.readyState == 4 && request_access.status == 200)
+                update_access_table();
+        }
+
+        request_access.open(request_type, "{{request.route_path('collection_control_access')}}/"+accessid, true);
+        request_access.setRequestHeader("Content-type", "application/json");
+        request_access.send(data);
+    }
+
+    function access_collection_request(request_type, data)
+    {
+        request_access = new XMLHttpRequest();
+
+        request_access.onreadystatechange = function() { 
+            if (request_access.readyState == 4 && request_access.status == 200)
+                update_access_table();
+        }
+
+        request_access.open(request_type, "{{request.route_path('collection_control_access')}}", true);
+        request_access.setRequestHeader("Content-type", "application/json");
+        request_access.send(data);
+    }
+
+    function delete_access(accessid)
+    {
+        access_request('DELETE', accessid, null);
+    }
+
+    function add_access()
+    {
+        var userid =  document.getElementById('access_userid').value;
+        var apikeyid =  document.getElementById('access_apikeyid').value;
+        var access_all_nodes =  document.getElementById('access_all_nodes').checked;
+
+        var data_to_send = {"data": get_access_data(), "access_all_nodes":access_all_nodes}
+
+        if(userid)
+            data_to_send['userid'] = userid
+
+        if(apikeyid)
+            data_to_send['apikeyid'] = apikeyid
+
+        var data_string_to_send = JSON.stringify(data_to_send);
+
+        access_collection_request('POST', data_string_to_send);
+    }
+
+    function print_access(response) 
+    {
+        accesses = JSON.parse(response)
+        var access_table = document.createElement("TABLE");
+        access_table.setAttribute('class', 'table');
+        access_table.setAttribute('id', 'access_table');
+
+        var header = access_table.createTHead();
+        var row = header.insertRow(0);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'id';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'data';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'all nodes';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'users';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'apikeys';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'nodes';
+        row.appendChild(cell);
+
+        var cell = document.createElement('TH');
+        cell.innerHTML = 'action';
+        row.appendChild(cell);
+
+        var table_body = access_table.createTBody();
+
+        function insertCell(curRow, pos)
+        {
+            var newCell = curRow.insertCell(pos);
+            newCell.setAttribute('class', 'col-md-2');
+            return newCell;
+        }
+
+        for(var access in accesses)
+        {
+            var curRow = table_body.insertRow();
+            insertCell(curRow, 0).innerHTML = access;
+            insertCell(curRow, 1).innerHTML = JSON.stringify(accesses[access]['data']);
+            insertCell(curRow, 2).innerHTML = accesses[access]['all_nodes'];
+
+            var users = accesses[access]['users'];
+
+            user_html = ""
+
+            for (user in users)
+            {
+                user_html = user_html + "<a href='#" + user + "'>" + users[user] + "</a>";
+            }
+
+            insertCell(curRow, 3).innerHTML = user_html;
+            insertCell(curRow, 4).innerHTML = accesses[access]['apikeys'];
+            insertCell(curRow, 5).innerHTML = accesses[access]['nodes'];
+
+            deleteButton = "<button class='btn btn-danger' onclick='delete_access(\""+access+"\");'>delete</button>";
+
+            insertCell(curRow, 6).innerHTML = deleteButton;
+        }
+
+        var access_div = document.getElementById('accesses');
+        var access_table_element = document.getElementById('access_table');
+        if(access_table_element)
+        {
+            access_div.replaceChild(access_table, access_table_element);
+        }
+        else
+        {
+            access_div.appendChild(access_table);
+        }
+    }
+
+    function get_access_data()
+    {
+        var data;
+        if($('#access_data_type').val() == 'pathstring')
+        {
+            data = [{"type":"pathstring", "access":$('#access_pathstring_type').val(), "string":$('#access_pathstring_string').val()}];
+        }
+        else
+        {
+            data = [{"type":"query", "query":$('#access_query').val()}];
+        }
+
+        return data;
+    }
+
+    function change_access_type()
+    {
+        if($('#access_data_type').val() == 'pathstring')
+        {
+            $('#pathstring_form').show()
+            $('#query_form').hide()
+        }
+        else
+        {
+            $('#pathstring_form').hide()
+            $('#query_form').show()
+        }
+    }
   </script>
 
-  <!-- Modal -->
+  <!-- User Modal -->
   <div id="add_user_modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
   
@@ -245,4 +425,70 @@
   
     </div>
   </div>
+
+  <!-- Access Modal -->
+  <div id="add_access_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add Access</h4>
+        </div>
+        <form>
+        <div class="modal-body">
+          <p>
+            <div class='form-group'>
+              <label for="access_data">data</label>
+              <select id='access_data_type' class='form-control' onchange='change_access_type();'>
+                <option>pathstring</option>
+                <option>query</option>
+              </select>
+            </div>
+            <div id='pathstring_form'>
+              <div class='form-group'>
+                <label for="access_pathstring_type">access type</label>
+                <select id='access_pathstring_type' class='form-control'>
+                  <option value='ro'>read-only</option>
+                  <option value='rw'>read-write</option>
+                  <option value='none'>none</option>
+                </select>
+              </div>
+              <div class='form-group'>
+                <label for="access_pathstring_string">pathstring</label>
+                <input type='text' id='access_pathstring_string' class='form-control'></input>
+              </div>
+            </div>
+            <div id='query_form'>
+              <div class='form-group'>
+                <label for="access_query">query</label>
+                <input type='text' id='access_query' class='form-control'></input>
+              </div>
+            </div>
+            <div class='form-group'>
+              <label for="access_userid">user id</label>
+              <input type='text' id='access_userid' class='form-control'></input>
+            </div>
+            <div class='form-group'>
+              <label for="access_apikeyid">apikey id</label>
+              <input type='text' id='access_apikeyid' class='form-control'></input>
+            </div>
+            <div class='checkbox'>
+              <label for="access_all_nodes"><input type='checkbox' id='access_all_nodes'></input>allow access to all nodes</label>
+            </div>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="add_access();">Add Access</button>
+        </div>
+        </form>
+      </div>
+  
+    </div>
+  </div>
+  <script type='text/javascript'>
+  change_access_type();
+  </script>
 {% endblock %}
