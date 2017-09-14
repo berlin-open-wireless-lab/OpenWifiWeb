@@ -25,12 +25,18 @@ def openwrt_list(request):
     for device in openwrt:
         devices.append(str(device.uuid))
 
+
+    table_fields = ['name', 'distribution', 'version', 'address', 'uuid','configuration', 'configured', 'master config']
+
+    if 'group:admin' in request.effective_principals:
+        table_fields.append('users')
+
     return {'idfield': 'uuid',
             'domain': 'openwrt',
             'devices': json.dumps(devices),
             'confdomain': 'openwrt_edit_config',
             'items': openwrt,
-            'table_fields': ['name', 'distribution', 'version', 'address', 'uuid','configuration', 'configured', 'master config'],
+            'table_fields': table_fields,
             'actions' : openwrt_actions }
 
 @view_config(route_name='openwrt_detail', renderer='templates/openwrt_detail.jinja2', layout='base', permission='node_access')
@@ -107,7 +113,6 @@ def openwrt_edit_config(request):
         pp.pprint(conf.diff(newUci));
         device.configuration = newUci.export_json()
         transaction.commit()
-        jobtask.update_config.delay(request.matchdict['uuid'])
         return HTTPFound(location=request.route_url('openwrt_list'))
     return{ 'hiddenOptions' : ['.index','.type','.name','.anonymous'],
             'config'        : conf,

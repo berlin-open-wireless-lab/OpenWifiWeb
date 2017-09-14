@@ -158,6 +158,10 @@ $(document).ready(function(){
          {%- else -%}
            No Config
          {%- endif -%}
+       {%- elif field == 'users' -%}
+         {%- for user in item[field] -%}
+           <a href="{{request.route_path('administration')}}#{{user}}-row" >{{item[field][user]}}</a></br>
+         {%- endfor -%}
        {%- else -%}
          <a href="{{ domain }}/{{ item[idfield] }}" >{{ item[field] }}</a>
          {%- if loop.first -%}
