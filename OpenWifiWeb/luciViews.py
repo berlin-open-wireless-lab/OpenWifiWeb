@@ -4,7 +4,7 @@ from openwifi.authentication import get_node_by_request
 @view_config(route_name='luci', renderer='templates/luci.jinja2', layout='base', permission='node_access')
 def luci2(request):
     device = get_node_by_request(request)
-    return {"uuid" : uuid,
+    return {"uuid" : device.uuid,
             "password" : device.password,
             "login" : device.login}
 
