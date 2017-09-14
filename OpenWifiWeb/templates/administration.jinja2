@@ -93,6 +93,7 @@
         for(var user in users)
         {
             var curRow = table_body.insertRow();
+            curRow.setAttribute('id', users[user] + "-row");
             curRow.insertCell(0).innerHTML = user;
             curRow.insertCell(1).innerHTML = users[user];
             curRow.insertCell(2).setAttribute('id', users[user]);
@@ -338,7 +339,7 @@
 
             for (user in users)
             {
-                user_html = user_html + "<a href='#" + user + "'>" + users[user] + "</a>";
+                user_html = user_html + "<a href='#" + user + "-row'>" + users[user] + "</a>";
             }
 
             insertCell(curRow, 3).innerHTML = user_html;
