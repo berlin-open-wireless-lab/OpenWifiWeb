@@ -10,7 +10,7 @@ def home(request):
 def drawConfigGraph(request):
     return {"confID" : request.matchdict["ID"]}
 
-@view_config(route_name='settings', renderer='templates/settings.jinja2', layout='base', permission='view')
+@view_config(route_name='settings_gui', renderer='templates/settings.jinja2', layout='base', permission='view')
 def settingsView(request):
     form = SettingsForm(request.POST)
 
@@ -30,7 +30,7 @@ def settingsView(request):
             if setting:
                 field.data = setting.value
 
-    save_url = request.route_url('settings')
+    save_url = request.route_url('settings_gui')
     return {'save_url':save_url, 'form':form}
 
 

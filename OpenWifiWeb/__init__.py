@@ -1,5 +1,5 @@
 globalWebViews = [['home','Home'],
-                  ['settings','Settings'],
+                  ['settings_gui','Settings'],
                   ['openwrt_list','OpenWrt'],
                   ['confarchive','Archive'],
                   ['sshkeys','SSH Keys'],
@@ -15,7 +15,7 @@ def addPluginRoutes(config):
     addSshRoutes(config)
     addLuciRoutes(config)
 
-    config.add_route('settings','/settings')
+    config.add_route('settings_gui','/settings_gui')
     config.add_route('file_upload', '/file_upload')
     config.add_route('loginForm', '/loginForm')
 
