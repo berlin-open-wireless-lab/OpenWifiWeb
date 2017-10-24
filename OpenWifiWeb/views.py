@@ -64,6 +64,16 @@ def file_upload_post(request):
 
     return HTTPFound(location=request.route_url('file_upload'))
 
+@view_config(route_name='file_upload_delete', renderer='templates/file_upload.jinja2', layout='base', permission='view')
+def file_upload_delete(request):
+    filename = request.matchdict['FILE']
+
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(basepath, 'upload', filename)
+
+    os.remove(file_path)
+    return HTTPFound(location=request.route_url('file_upload'))
+
 @view_config(route_name='administration', renderer='templates/administration.jinja2', layout='base', permission='modUsers')
 def admin_route(request):
     return {}

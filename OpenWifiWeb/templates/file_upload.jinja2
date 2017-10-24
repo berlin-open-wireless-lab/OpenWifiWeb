@@ -9,7 +9,7 @@
 <div class="row">
   <h2>Uploaded Files</h2>
     {% for file in files %}
-      <a href="{{request.static_path('OpenWifiWeb:upload/'+file)}}">{{ file }}</a> <br />
+      <a class='btn btn-danger' href="{{request.route_path('file_upload_delete', FILE=file)}}">DELETE</a> <a href="{{request.static_path('OpenWifiWeb:upload/'+file)}}">{{ file }}</a> <br />
     {% endfor %}
 </div>
 

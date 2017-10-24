@@ -17,6 +17,7 @@ def addPluginRoutes(config):
 
     config.add_route('settings_gui','/settings_gui')
     config.add_route('file_upload', '/file_upload')
+    config.add_route('file_upload_delete', '/file_upload_delete/{FILE}')
     config.add_route('loginForm', '/loginForm')
 
     config.add_route('administration','/administration')
