@@ -9,7 +9,12 @@
 <div class="row">
   <h2>Uploaded Files</h2>
     {% for file in files %}
-      <a class='btn btn-danger' href="{{request.route_path('file_upload_delete', FILE=file)}}">DELETE</a> <a href="{{request.static_path('OpenWifiWeb:upload/'+file)}}">{{ file }}</a> <br />
+      <a class='btn btn-danger' href="{{request.route_path('file_upload_delete', FILE=file)}}">DELETE</a> 
+      {% if user_id %}
+          <a href="{{request.static_path('OpenWifiWeb:upload/'+user_id+'/'+file)}}">{{ file }}</a> <br />
+      {% else %}
+          <a href="{{request.static_path('OpenWifiWeb:upload/'+file)}}">{{ file }}</a> <br />
+      {% endif %}
     {% endfor %}
 </div>
 
