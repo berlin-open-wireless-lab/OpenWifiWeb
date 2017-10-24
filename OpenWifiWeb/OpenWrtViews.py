@@ -46,7 +46,7 @@ def openwrt_detail(request):
         return exc.HTTPNotFound()
 
     return {'device': device,
-            'fields': ['name', 'distribution', 'version', 'address', 'uuid', 'login', 'password', 'templates', 'capabilities', 'communication_protocol'],
+            'fields': ['name', 'distribution', 'version', 'address', 'uuid', 'login', 'password', 'templates', 'capabilities', 'communication_protocol', 'data'],
             'actions': openwrt_actions }
 
 @view_config(route_name='openwrt_add', renderer='templates/openwrt_add.jinja2', layout='base', permission='node_add')
@@ -54,6 +54,9 @@ def openwrt_add(request):
     form = OpenWrtEditForm(request.POST)
     if request.method == 'POST' and form.validate():
         ap = OpenWrt(form.name.data, form.address.data, form.distribution.data, form.version.data, form.uuid.data, form.login.data, form.password.data, False)
+        ap.setData('capabilities', form.capabilities.data)
+        ap.setData('data', form.data.data)
+        ap.setData('communication_protocol', form.communication_protocol.data)
         DBSession.add(ap)
         return HTTPFound(location=request.route_url('openwrt_list'))
 
@@ -68,6 +71,9 @@ def openwrt_edit(request):
     form = OpenWrtEditForm(request.POST)
     if request.method == 'POST' and form.validate():
         device.set(form.name.data, form.address.data, form.distribution.data, form.version.data, form.uuid.data, form.login.data, form.password.data, device.configured)
+        device.setData('capabilities', form.capabilities.data)
+        device.setData('data', form.data.data)
+        device.setData('communication_protocol', form.communication_protocol.data)
         return HTTPFound(location=request.route_url('openwrt_list'))
     else:
         form.name.data = device.name
@@ -79,6 +85,7 @@ def openwrt_edit(request):
         form.password.data = device.password
         form.capabilities.data = device.capabilities
         form.communication_protocol.data = device.communication_protocol
+        form.data.data = device.data
 
     save_url = request.route_url('openwrt_edit', uuid=device.uuid)
     return {'save_url':save_url, 'form':form}
