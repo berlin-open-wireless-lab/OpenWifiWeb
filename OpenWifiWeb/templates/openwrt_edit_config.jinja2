@@ -42,7 +42,7 @@
  <div role="tabpanel">
   <ul class="nav nav-tabs" role="tablist"> <!-- list of tabtitles -->
    {# iterate thru packages for tabtitles  #}
-   {%- for name, configs in config.packages.items() -%} 
+   {%- for name, configs in config.packages|dictsort -%} 
    <li role="presentation">
     <a href="#{{name}}" aria-controls="{{name}}" role="tab" data-toggle="tab">
      {{name}}
@@ -53,13 +53,13 @@
   <!-- Tab panes -->
   <div class="tab-content">
   {# iterate thru packages for package content #}
-  {%- for name, configs in config.packages.items() -%} 
+  {%- for name, configs in config.packages|dictsort -%} 
   <div role="tabpanel" class="tab-pane" id="{{name}}">
    <div class="container">
     <div class="panel-group" id="accordion{{name}}" 
          role="tablist" aria-multiselectable="true">
      {# iterate thru configs of a package #}
-     {%- for confname, conf in configs.items() -%} 
+     {%- for confname, conf in configs|dictsort -%} 
       <div class="panel panel-default">
        <div class="panel-heading" role="tab" id="heading{{name}}{{confname}}">
         <h4 class="panel-title">
@@ -75,13 +75,13 @@
             role="tabpanel" aria-labelledby="heading{{name}}{{confname}}">
         <div class="panel-body">
          <table class="table" id="table{{name}}{{confname}}">
-         {%- for option, value in conf.export_dict(forjson=True).items() -%}
+         {%- for option, value in conf.export_dict(forjson=True)|dictsort -%}
            {%- if option in hiddenOptions -%}
             <tr class='toHide hidden'>
 	     <td class='deletePopup'>{{option}}:</td> 
 	     <td>
 	      <input class="form-control" type="text" 
-	             name="{{name}} {{conf.name}} {{option}}" value="{{value}}" />
+	             name="{{name}} {{conf.name}} {{option}}" value='{{ value|tojson }}' />
 	     </td> 
 	    </tr>
            {%- else -%}
@@ -91,7 +91,7 @@
 	     </td> 
 	     <td>
 	      <input class="form-control" type="text" 
-	             name="{{name}} {{conf.name}} {{option}}" value="{{value}}" /> 
+	             name="{{name}} {{conf.name}} {{option}}" value='{{ value|tojson }}' /> 
 	     </td> 
 	    </tr>
            {%- endif -%}
