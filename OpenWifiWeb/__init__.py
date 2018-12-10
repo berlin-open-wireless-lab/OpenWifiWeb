@@ -44,5 +44,4 @@ def addSshRoutes(config):
     config.add_route('sshkeys_action', '/sshkeys/{id}/{action}')
 
 def addLuciRoutes(config):
-    config.add_route('luci', '/luci/{uuid}', factory='openwifi.node_context')
-    config.add_route('ubus', '/ubus/{uuid}*command', factory='openwifi.node_context')
+    config.add_route('luci_proxy', '/luci_proxy/{uuid}*req', factory='openwifi.node_context')

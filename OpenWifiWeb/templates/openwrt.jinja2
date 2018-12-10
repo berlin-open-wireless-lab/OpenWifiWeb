@@ -151,7 +151,7 @@ $(document).ready(function(){
        {%- if field == "configuration" -%}
          <a class="btn btn-primary" href="{{ confdomain }}/{{ item[idfield] }}" >show config</a>
          <a class="btn btn-primary" href="{{request.route_path('openwrt_edit', uuid=item[idfield])}}" >edit</a>
-         <a class="btn btn-primary" href="{{request.route_path('luci', uuid=item[idfield])}}" target="_blank" >start luci</a></td>
+         <a class="btn btn-primary" href="{{request.route_path('luci_proxy', uuid=item[idfield], req="")}}" target="_blank" >start luci</a></td>
        {%- elif field == "master config" -%}
          {%- if item['masterconf'] -%}
            <a href="{{request.route_path('configGraph', ID=item['masterconf'].id)}}">{{item['masterconf'].id}}</a>
