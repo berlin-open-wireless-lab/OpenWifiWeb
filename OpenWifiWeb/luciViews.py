@@ -5,12 +5,22 @@ from openwifi.authentication import get_node_by_request
 def luci_proxy(request):
     device = get_node_by_request(request)
     uuid = request.matchdict['uuid']
-
     address = device.address
 
     path = "/"
     for sub_path in request.matchdict['req']:
         path += sub_path + "/"
+
+    if 'sysauth' not in request.cookies.keys() and path.startswith('/cgi-bin/luci'):
+        login = device.login
+        password = device.password
+        form_dict = {"luci_password": password,
+                     "luci_login": login}
+
+        request.method = "POST"
+        path = "/cgi-bin/luci"
+        request.text="luci_username={}&luci_password={}".format(login, password)
+        request.content_type = "application/x-www-form-urlencoded"
 
     proxy = Proxy()
     request.upath_info = path
